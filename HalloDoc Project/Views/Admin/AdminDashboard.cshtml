@@ -351,7 +351,7 @@
 
                     <div class="my-2">
                         <select required class="form-select" name="CancelReason" id="cancelreason" aria-label="Default select example">
-                            <option selected>Reasons for cancellation</option>
+                            <option selected disabled value="">Reasons for cancellation</option>
                             @for (int i = 0; i < @Model.casetags.Count; i++)
                             {
                                 <option value="@Model.casetags[i].Casetagid">
@@ -361,7 +361,7 @@
                         </select>
                     </div>
                     <div class="form-floating my-2">
-                        <textarea class="form-control" name="CancelDescription" placeholder="Description" id="canceldescription" style="height: 100px"></textarea>
+                        <textarea required class="form-control" name="CancelDescription" placeholder="Description" id="canceldescription" style="height: 100px"></textarea>
                         <label for="description">Description</label>
                     </div>
 

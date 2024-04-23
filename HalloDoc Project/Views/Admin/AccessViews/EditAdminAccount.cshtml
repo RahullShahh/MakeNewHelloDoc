@@ -16,6 +16,7 @@
             </a>
         </div>
     </div>
+    <partial name="_ValidationScriptsPartial"></partial>
     <div class="container mb-5 pb-5 request_form shadow-lg px-4">
         <div class="row">
             <h3 class="mt-4">Account Information</h3>
@@ -23,39 +24,47 @@
         <form method="post" asp-controller="Admin" asp-action="EditPasswordPost">
             <input asp-for="adminId" hidden />
             <div class="row">
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="username" disabled type="text" required class="form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">User Name</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="username" disabled type="text" required class="form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">User Name</label>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="password" class="form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Password</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="password" class="form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Password</label>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 col-12 form-floating mt-3 temp">
-                    <select asp-for="statusId" disabled class="adminInfoInput form-select inputs">
-                        <option value="0" disabled>Select Status</option>
-                        @for (int i = 0; i < Model.statuses.Count; i++)
-                        {
-                            <option value="@Model.statuses[i].StatusId">@Model.statuses[i].Name</option>
-                        }
-                    </select>
-                    <label for="" class="input_labels ms-2">Status</label>
+                <div class="row">
+                    <div class="col-lg-6 col-12 temp mt-4">
+                        <div class="form-floating">
+                            <select asp-for="statusId" disabled class="adminInfoInput form-select inputs">
+                                <option value="0" disabled>Select Status</option>
+                                @for (int i = 0; i < Model.statuses.Count; i++)
+                                {
+                                    <option value="@Model.statuses[i].StatusId">@Model.statuses[i].Name</option>
+                                }
+                            </select>
+                            <label for="" class="input_labels ms-2">Status</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-12 temp mt-4">
+                        <div class="form-floating">
+                            <select asp-for="roleId" disabled class="adminInfoInput form-select inputs">
+                                <option value="0" disabled>Select Role</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Junior Admin</option>
+                                <option value="3">Senior Admin</option>
+                                <option value="4">Master Admin</option>
+                            </select>
+                            <label for="" class="input_labels ms-2">Role</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-12 form-floating mt-3 temp">
-                    <select asp-for="roleId" disabled class="adminInfoInput form-select inputs">
-                        <option value="0" disabled>Select Role</option>
-                        <option value="1">Admin</option>
-                        <option value="2">Junior Admin</option>
-                        <option value="3">Senior Admin</option>
-                        <option value="4">Master Admin</option>
-                    </select>
-                    <label for="" class="input_labels ms-2">Role</label>
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-outline-info text-info mx-1" asp-action="PasswordPost" asp-controller="Admin">Reset Password</button>
                 </div>
-            </div>
-            <div class="text-end mt-3">
-                <button type="submit" class="btn btn-outline-info text-info mx-1" asp-action="PasswordPost" asp-controller="Admin">Reset Password</button>
             </div>
         </form>
 
@@ -65,54 +74,66 @@
         <form method="post" asp-controller="Admin" asp-action="EditAdminInfoPost">
             <input asp-for="adminId" hidden />
             <div class="row">
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="firstname" disabled type="text" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">First Name</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="firstname" disabled type="text" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">First Name</label>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="lastname" disabled type="text" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Last Name</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="email" disabled type="email" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Email</label>
-                </div>
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="confirmEmail" disabled type="email" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Confirm Email</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="lastname" disabled type="text" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Last Name</label>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6 col-12 temp mt-4 form-floating d-flex h-100">
-                    <input asp-for="phoneNo" id="phone" disabled class="adminInfoInput py-3 form-control inputs border" type="tel" />
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="email" disabled type="email" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Email</label>
+                    </div>
                 </div>
-                <div class="col-12 align-items-center d-flex col-sm-6 mt-4 form-floating">
-                    <button disabled class="btn col-12 border dropdown-toggle adminInfoInput" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Select States
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="StatesMenu">
-                        <div class="row">
-                            @for (int i = 0; i < Model.States.Count; i++)
-                            {
-                                @if (i % 2 == 0)
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="confirmEmail" disabled type="email" class="adminInfoInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Confirm Email</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating d-flex h-100">
+                        <input asp-for="phoneNo" id="phone" disabled class="adminInfoInput py-3 form-control inputs border" type="tel" />
+                    </div>
+                </div>
+                <div class="col-sm-6 col-12 temp mt-4">
+                    <div class="form-floating d-flex align-items-center">
+                        <button disabled class="btn col-12 border dropdown-toggle adminInfoInput" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select States
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="StatesMenu">
+                            <div class="row">
+                                @for (int i = 0; i < Model.States.Count; i++)
                                 {
-                                    <div class="col-6">
-                                        <input type="checkbox" name="AdminLocations" @(Model.chosenLocations.Contains(Model.States[i].Regionid) ? "checked" : "") class="ms-3" id="state_@i" value="@Model.States[i].Regionid">
-                                        <label for="state_@i" class="mx-3">@Model.States[i].Name</label>
-                                        <br />
-                                    </div>
+                                    @if (i % 2 == 0)
+                                    {
+                                        <div class="col-6">
+                                            <input type="checkbox" name="AdminLocations" @(Model.chosenLocations.Contains(Model.States[i].Regionid) ? "checked" : "") class="ms-3" id="state_@i" value="@Model.States[i].Regionid">
+                                            <label for="state_@i" class="mx-3">@Model.States[i].Name</label>
+                                            <br />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-6">
+                                            <input type="checkbox" name="AdminLocations" @(Model.chosenLocations.Contains(Model.States[i].Regionid) ? "checked" : "") class="ms-3" id="state_@i" value="@Model.States[i].Regionid">
+                                            <label for="state_@i" class="mx-3">@Model.States[i].Name</label>
+                                            <br />
+                                        </div>
+                                    }
                                 }
-                                else
-                                {
-                                    <div class="col-6">
-                                        <input type="checkbox" name="AdminLocations" @(Model.chosenLocations.Contains(Model.States[i].Regionid) ? "checked" : "") class="ms-3" id="state_@i" value="@Model.States[i].Regionid">
-                                        <label for="state_@i" class="mx-3">@Model.States[i].Name</label>
-                                        <br />
-                                    </div>
-                                }
-                            }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -130,38 +151,50 @@
         <form method="post" asp-controller="Admin" asp-action="EditBillingInfoPost">
             <input asp-for="adminId" hidden />
             <div class="row">
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="address1" disabled type="text" class="billingInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Address 1</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="address1" disabled type="text" class="billingInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Address 1</label>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="address2" disabled type="text" class="billingInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Address 2</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="city" disabled type="text" class="billingInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">City</label>
-                </div>
-                <div class="col-lg-6 col-12 form-floating mt-3 temp">
-                    <select asp-for="regionId" disabled class="billingInput form-select inputs">
-                        <option value="0" disabled>Select State</option>
-                        @for (int i = 0; i < Model.States.Count; i++)
-                        {
-                            <option value="@Model.States[i].Regionid">@Model.States[i].Name</option>
-                        }
-                    </select>
-                    <label for="" class="input_labels ms-2">State</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="address2" disabled type="text" class="billingInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Address 2</label>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6 col-12 form-floating temp mt-4">
-                    <input asp-for="zipcode" disabled type="number" class="billingInput form-control inputs border" placeholder="name@example.com">
-                    <label for="floatingInput" class="input_labels ms-2">Zip</label>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="city" disabled type="text" class="billingInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">City</label>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-12 temp mt-4 form-floating d-flex h-100">
-                    <input asp-for="billingPhone" disabled id="phone1" class="billingInput py-3 form-control inputs border" type="tel" />
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <select asp-for="regionId" disabled class="billingInput form-select inputs">
+                            <option value="0" disabled>Select State</option>
+                            @for (int i = 0; i < Model.States.Count; i++)
+                            {
+                                <option value="@Model.States[i].Regionid">@Model.States[i].Name</option>
+                            }
+                        </select>
+                        <label for="" class="input_labels ms-2">State</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating">
+                        <input asp-for="zipcode" disabled type="number" class="billingInput form-control inputs border" placeholder="name@example.com">
+                        <label for="floatingInput" class="input_labels ms-2">Zip</label>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12 temp mt-4">
+                    <div class="form-floating d-flex h-100">
+                        <input asp-for="billingPhone" disabled id="phone1" class="billingInput py-3 form-control inputs border" type="tel" />
+                    </div>
                 </div>
             </div>
             <div class="text-end mt-3">

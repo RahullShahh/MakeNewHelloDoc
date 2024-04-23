@@ -9,7 +9,9 @@ namespace DAL.ViewModels
 {
     public  class ForgotPasswordViewModel
     {
-        [Required(ErrorMessage ="E-mail cannot be empty")]
-        public string email {  get; set; }  
+        [Required(ErrorMessage = "Email cannot be kept empty")]
+        [RegularExpression("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$", ErrorMessage = "Enter Valid Email")]
+        public required string Email {  get; set; }  
     }
 }
+

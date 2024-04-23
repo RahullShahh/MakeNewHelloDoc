@@ -159,6 +159,9 @@
         }
     });
 }
+
+
+
     $(document).ready(function () {
         const createProviderShiftModal = new bootstrap.Modal("#createProviderShiftModal");
 
@@ -316,16 +319,59 @@
             calendar.render();
         }
 
+        // $('#createProviderShiftForm').submit(function (event) {
+        //     event.preventDefault();
+        //     debugger;
+        //     if ($('#Isrepeat').is(":checked") && $('input[name="weekdays"]:checked').length == 0) {
+        //         $('#weekdayError').text("Select atleast one day");
+        //         return;
+        //     }
+        //     else {
+        //         $('#weekdayError').text("");
+        //     }
+        //     if ($('#Isrepeat').is(":checked") && $('#Refill').val() === "") {
+        //         $('#refillError').text("Required Field");
+        //         return;
+        //     }
+        //     else {
+        //         $('#refillError').text("");
+        //     }
+        //     var formData = $(this).serialize();
+        //     if ($('#physicianRegions').val() == "") {
+        //         $('#regionError').text('Select One Region');
+        //         return;
+        //     }
+        //     else {
+        //         $('#regionError').text('');
+        //     }
+
+        //     console.log(formData);
+        //     $.ajax({
+        //         url: '/Provider/CreateShift',
+        //         type: 'POST',
+        //         data: formData,
+        //         success: function (response) {
+        //             $('#shiftCancel').click();
+        //             // $('#scheduling').load('/Provider/ProviderSchedulingPartial');
+        //             window.location.reload();
+        //             if (response.success) {
+        //                 if (response.successMessage != "" || response.successMessage != null) {
+        //                     toastr.success(response.successMessage.toString());
+        //                 }
+        //                 if (response.errorMessage != "" || response.errorMessage != null) {
+        //                     toastr.error(response.errorMessage.toString());
+        //                 }
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error('Error submitting form:', error);
+        //         }
+        //     });
+        // });
         $('#createProviderShiftForm').submit(function (event) {
-            event.preventDefault();
             debugger;
-            if ($('#Isrepeat').is(":checked") && $('input[name="weekdays"]:checked').length == 0) {
-                $('#weekdayError').text("Select atleast one day");
-                return;
-            }
-            else {
-                $('#weekdayError').text("");
-            }
+            event.preventDefault();
+            
             if ($('#Isrepeat').is(":checked") && $('#Refill').val() === "") {
                 $('#refillError').text("Required Field");
                 return;
@@ -341,13 +387,13 @@
             else {
                 $('#regionError').text('');
             }
-
             console.log(formData);
             $.ajax({
                 url: '/Provider/CreateShift',
                 type: 'POST',
                 data: formData,
                 success: function (response) {
+                    debugger;
                     $('#shiftCancel').click();
                     // $('#scheduling').load('/Provider/ProviderSchedulingPartial');
                     window.location.reload();
@@ -368,10 +414,6 @@
         $('#createProviderShiftModal').on('hidden.bs.modal', function () {
             $(this).find('form')[0].reset();
         });
-
-        // $('#createProviderShiftModal').on('shown.bs.modal', function () {
-
-        // });
     });
 
 

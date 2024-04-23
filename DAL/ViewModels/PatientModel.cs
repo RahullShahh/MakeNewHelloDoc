@@ -9,8 +9,8 @@ namespace DAL.ViewModels
         public string? Symptoms { get; set; }
         [Required(ErrorMessage = "First name cannot be kept empty")]
         [RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Please enter a valid first name.")]        
-        public string FirstName { get; set; } 
-        
+        public string FirstName { get; set; }
+        [Required(ErrorMessage = "Last name cannot be kept empty")]
         [RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Please enter a valid last name.")]
         public string? LastName { get; set; }
         

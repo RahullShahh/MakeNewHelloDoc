@@ -15,7 +15,7 @@ namespace DAL.ViewModels
         public string password { get; set; }    
         public int statusId {  get; set; }
         public int roleId { get; set; }
-        public string firstname {  get; set; }
+        public string firstname { get; set; } 
         public string lastname { get; set; }
         public string email {  get; set; }
         public string confirmEmail {  get; set; }

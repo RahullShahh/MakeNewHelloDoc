@@ -155,9 +155,9 @@ namespace HalloDoc_Project.Controllers
         {
             bool shiftExists = _context.Shiftdetails.Any(sd => sd.Isdeleted != true && sd.Shift.Physicianid == int.Parse(physicianSelect) &&
                sd.Shiftdate.Date == StartDate.ToDateTime(TimeOnly.FromDateTime(DateTime.Now)).Date &&
-               ((Starttime <= sd.Endtime && Starttime >= sd.Starttime) 
-                    || (Endtime >= sd.Starttime && Endtime <= sd.Endtime)  
-                    || (sd.Starttime <= Endtime && sd.Starttime >= Starttime)  
+               ((Starttime <= sd.Endtime && Starttime >= sd.Starttime)
+                    || (Endtime >= sd.Starttime && Endtime <= sd.Endtime)
+                    || (sd.Starttime <= Endtime && sd.Starttime >= Starttime)
                     || (sd.Endtime >= Starttime && sd.Endtime <= Endtime)));
             if (!shiftExists)
             {
@@ -256,7 +256,7 @@ namespace HalloDoc_Project.Controllers
 
                                 _context.Add(shiftdetailregion1);
                                 _context.SaveChanges();
-                            //shift created
+                                //shift created
                             }
                             else
                             {
@@ -737,10 +737,10 @@ namespace HalloDoc_Project.Controllers
             }
             return RedirectToAction("ViewUploads", new { requestid = uploads.RequestID });
         }
-        public IActionResult SendMail(List<string> filenames, int requestid)
+        public IActionResult SendMail(int requestid)
         {
             var path = _environment.WebRootPath;
-            _emailService.SendEmailWithAttachments(filenames, requestid, path);
+            _emailService.SendEmailWithAttachments(requestid, path);
             return RedirectToAction("ViewUploads", "Admin", new { requestid = requestid });
         }
         #endregion
@@ -976,11 +976,9 @@ namespace HalloDoc_Project.Controllers
             profile.Regions = _adminActions.GetRegionsList();
             return View("AccessViews/CreateAdminAccount", profile);
         }
-
         [HttpPost]
         public IActionResult CreateAdminAccount(CreateAdminViewModel profile, string[] regions)
         {
-
             if (ModelState.IsValid)
             {
                 _admin.CreateAdminAccountPost(profile, regions);
@@ -1003,9 +1001,11 @@ namespace HalloDoc_Project.Controllers
         #region Create Physician
         public IActionResult CreatePhysician()
         {
-            EditPhysicianViewModel model = new EditPhysicianViewModel();
-            model.Role = _context.Roles.ToList();
-            model.States = _context.Regions.ToList();
+            EditPhysicianViewModel model = new EditPhysicianViewModel
+            {
+                Role = _context.Roles.ToList(),
+                States = _context.Regions.ToList()
+            };
             return View("ProviderViews/CreatePhysician", model);
         }
         [HttpPost]
@@ -1071,7 +1071,7 @@ namespace HalloDoc_Project.Controllers
                 }
                 _context.SaveChanges();
             }
-            _notyf.Success("New Provider Created");
+            _notyf.Success("New Physician Created");
             Model.Role = _context.Roles.ToList();
             Model.States = _context.Regions.ToList();
             return View("ProviderViews/CreatePhysician", Model);
@@ -1293,7 +1293,7 @@ namespace HalloDoc_Project.Controllers
         #region Provider Menu
         public IActionResult ProviderMenu()
         {
-            ProviderMenuViewModel ProviderMenuData=new ProviderMenuViewModel();
+            ProviderMenuViewModel ProviderMenuData = new ProviderMenuViewModel();
             ProviderMenuData.Region = _context.Regions.ToList();
 
             var DoctorDetails = (from p in _context.Physicians
@@ -1314,7 +1314,7 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult ProviderMenuPartial(int regionid)
         {
-            ProviderMenuViewModel ProviderMenuData= new ProviderMenuViewModel();
+            ProviderMenuViewModel ProviderMenuData = new ProviderMenuViewModel();
             var DoctorDetails = (from p in _context.Physicians
                                  join ph in _context.Physiciannotifications on p.Physicianid equals ph.Physicianid into notigroup
                                  from notiitem in notigroup.DefaultIfEmpty()
@@ -1329,7 +1329,7 @@ namespace HalloDoc_Project.Controllers
                                      Role = p.Roleid ?? 0
                                  }).ToList();
             ProviderMenuData.providers = DoctorDetails;
-            return PartialView("ProviderViews/ProviderMenuPartial",ProviderMenuData);
+            return PartialView("ProviderViews/ProviderMenuPartial", ProviderMenuData);
         }
         public void UpdateNotifications(int PhysicianId)
         {
@@ -1628,7 +1628,7 @@ namespace HalloDoc_Project.Controllers
         public IActionResult PatientHistoryPartialTable(string FirstName, string LastName, string Email, string PhoneNo)
         {
 
-            
+
             List<PatientHistoryTableViewModel> PatientHistoryList = _patientHistoryPatientRecords.GetPatientHistoryData(FirstName, LastName, Email, PhoneNo);
             return PartialView("Records/PatienthistoryPartialTable", PatientHistoryList);
         }
@@ -1638,7 +1638,7 @@ namespace HalloDoc_Project.Controllers
         }
         public IActionResult PatientRecords(int Userid)
         {
-            
+
             List<PatientRecordsViewModel> PatientRecordsList = _patientHistoryPatientRecords.GetPatientRecordsData(Userid);
             return View("Records/PatientRecords", PatientRecordsList);
         }
@@ -1748,8 +1748,6 @@ namespace HalloDoc_Project.Controllers
         #region VENDOR DETAILS / CREATE VENDORS / EDIT VENDORS
         public IActionResult VendorDetails()
         {
-            //int adminId = (int)HttpContext.Session.GetString("Email");
-            //Admin admin = _context.Admins.FirstOrDefault(u => u.email == adminId);
             VendorDetailsViewModel model = _vendorDetails.GetVendorDetails();
             return View("Partners/VendorDetails", model);
         }
@@ -1767,12 +1765,8 @@ namespace HalloDoc_Project.Controllers
         }
         public IActionResult AddBusiness()
         {
-
-            //    int adminId = (int)HttpContext.Session.GetInt32("adminId");
-            //    Admin admin = _context.Admins.FirstOrDefault(u => u.Adminid == adminId);
             CreateUpdateVendorViewModel model = new()
             {
-                //model.UserName = admin.Firstname + " " + admin.Lastname;
                 types = _context.Healthprofessionaltypes.ToList(),
                 regions = _context.Regions.ToList()
             };
@@ -1783,38 +1777,18 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public IActionResult AddBusiness(CreateUpdateVendorViewModel model)
         {
-            //    var mobile = "+" + model.code + "-" + model.phone;
-            //    var mobile1 = "+" + model.code1 + "-" + model.phone1;
+            if (ModelState.IsValid)
+            {
+                _vendorDetails.AddNewBusiness(model);
+                _notyf.Success("New vendor added successfully");
 
-
-            //    //int adminId = (int)HttpContext.Session.GetInt32("adminId");
-            //    //Admin admin = _context.Admins.FirstOrDefault(u => u.Adminid == adminId);
-            //    var region = _context.Regions.FirstOrDefault(x => x.Regionid == model.state);
-
-            //    Healthprofessional profession = new Healthprofessional()
-            //    {
-            //        Vendorname = model.BusinessName,
-            //        Profession = model.type,
-            //        Faxnumber = model.Fax,
-            //        Phonenumber = mobile,
-            //        Email = model.Email,
-            //        Businesscontact = mobile1,
-            //        Address = model.street,
-            //        City = model.city,
-            //        State = region.Name,
-            //        Zip = model.zip,
-            //        Regionid = model.state,
-            //        Createddate = DateTime.Now,
-            //    };
-
-            //    _context.Healthprofessionals.Add(profession);
-            //    _context.SaveChanges();
-            _vendorDetails.AddNewBusiness(model);
+            }
             return RedirectToAction("VendorDetails");
         }
 
         public IActionResult EditBusiness(int id)
         {
+
             CreateUpdateVendorViewModel model = _vendorDetails.GetBusinessDetailsForEdit(id);
             return View("Partners/EditBusiness", model);
         }
@@ -1822,7 +1796,11 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public IActionResult EditBusiness(CreateUpdateVendorViewModel model)
         {
-            model = _vendorDetails.UpdateBusinessDetails(model);
+            if (ModelState.IsValid)
+            {
+                model = _vendorDetails.UpdateBusinessDetails(model);
+                _notyf.Success("Vendor Details saved successfully");
+            }
             return RedirectToAction("EditBusiness", model.Id);
         }
 
@@ -1950,28 +1928,41 @@ namespace HalloDoc_Project.Controllers
 
         public IActionResult EditAdminAccount(int id)
         {
-            Admin GetAdmin = _context.Admins.FirstOrDefault(admin=>admin.Adminid==id);
+            Admin? GetAdmin = _context.Admins.FirstOrDefault(admin => admin.Adminid == id);
             AdminProfileViewModel model = _admin.AdminProfileGet(GetAdmin.Email);
             return View("AccessViews/EditAdminAccount", model);
         }
         [HttpPost]
         public IActionResult EditAdminInfoPost(AdminProfileViewModel apvm, string[] AdminLocations)
         {
-            _admin.AdminInfoPost(apvm, AdminLocations);
+            if (ModelState.IsValid)
+            {
+                _admin.AdminInfoPost(apvm, AdminLocations);
+                _notyf.Success("Admin details updated");
+            }
             return EditAdminAccount(apvm.adminId);
         }
         [HttpPost]
         public IActionResult EditBillingInfoPost(AdminProfileViewModel apvm)
         {
-            _admin.BillingInfoPost(apvm);
+            if (ModelState.IsValid)
+            {
+                _admin.BillingInfoPost(apvm);
+                _notyf.Success("Billing details updated");
+            }
             return EditAdminAccount(apvm.adminId);
         }
         [HttpPost]
         public IActionResult EditPasswordPost(AdminProfileViewModel apvm)
         {
-            var email = HttpContext.Session.GetString("Email");
-            if (email != null)
-                _admin.PasswordPost(apvm, email);
+            if (ModelState.IsValid)
+            {
+                var email = HttpContext.Session.GetString("Email");
+                if (email != null)
+                { 
+                    _admin.PasswordPost(apvm, email);
+                }
+            }
             return EditAdminAccount(apvm.adminId);
         }
 

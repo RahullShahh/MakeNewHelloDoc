@@ -350,9 +350,11 @@ namespace HalloDoc_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var jwtToken = _resetPasswordService.GenerateJWTTokenForPassword(fvm.email);
+                var jwtToken = _resetPasswordService.GenerateJWTTokenForPassword(fvm.Email);
                 var resetLink = Url.Action("ResetPassword", "Guest", new { token = jwtToken }, Request.Scheme);
-                _emailService.SendEmailForPasswordReset(fvm, resetLink);
+                if (resetLink != null)
+                    _emailService.SendEmailForPasswordReset(fvm, resetLink);
+                _notyf.Success("Link sent in email");
                 return RedirectToAction("login_page", "Guest");
             }
             return View();
@@ -381,19 +383,22 @@ namespace HalloDoc_Project.Controllers
         [HttpPost]
         public IActionResult ResetPassword(ResetPasswordViewModel rpvm)
         {
-            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == rpvm.email);
-            if (rpvm.password == rpvm.confirmpassword)
+            if (ModelState.IsValid)
             {
-                aspnetuser.Passwordhash = _passwordHasher.GenerateSHA256(rpvm.password);
-                aspnetuser.Modifieddate = DateTime.Now;
-                _context.Aspnetusers.Update(aspnetuser);
-                _context.SaveChanges();
-                return View("login_page");
+                Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == rpvm.email);
+                if (rpvm.password == rpvm.confirmpassword)
+                {
+                    aspnetuser.Passwordhash = _passwordHasher.GenerateSHA256(rpvm.password);
+                    aspnetuser.Modifieddate = DateTime.Now;
+                    _context.Aspnetusers.Update(aspnetuser);
+                    _context.SaveChanges();
+                    return View("login_page");
+                }
+
             }
-            else
-            {
-                return View("Error");
-            }
+
+            return View(rpvm);
+
         }
         #endregion
 

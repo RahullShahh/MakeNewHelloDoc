@@ -1,14 +1,8 @@
-﻿using BAL.Interfaces;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using BAL.Interfaces;
 using DAL.DataContext;
 using DAL.DataModels;
 using DAL.ViewModels;
-using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BAL.Repository
 {
@@ -16,17 +10,18 @@ namespace BAL.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher _passwordHasher;
-        public AdminRepo(ApplicationDbContext context, IPasswordHasher passwordHasher)
+        private readonly INotyfService _notyf;
+        public AdminRepo(ApplicationDbContext context, IPasswordHasher passwordHasher,INotyfService notyf)
         {
             _context = context;
             _passwordHasher = passwordHasher;
+            _notyf = notyf;
         }
         public AdminProfileViewModel AdminProfileGet(string email)
         {
             Aspnetuser user = _context.Aspnetusers.FirstOrDefault(x => x.Email == email);
             Admin admin = _context.Admins.FirstOrDefault(x => x.Email == email);
-            var adminRegions = _context.Adminregions.Where(region => region.Adminid == admin.Adminid).ToList().Select(x => x.Regionid ?? 0).ToList();
-            //Region reg = _context.Regions.FirstOrDefault(x => x.Regionid == admin.Regionid);
+            var adminRegions = _context.Adminregions.Where(region => region.Adminid == admin.Adminid).ToList().Select(x => x.Regionid ?? 0).ToList();
 
             AdminProfileViewModel model = new AdminProfileViewModel()
             {
@@ -102,6 +97,7 @@ namespace BAL.Repository
             var FindUser = _context.Aspnetusers.FirstOrDefault(x => x.Email == email);
             if (FindUser != null)
                 FindUser.Passwordhash = _passwordHasher.GenerateSHA256(apvm.password);
+            _notyf.Success("Password Updated");
         }
 
         public void CreateAdminAccountPost(CreateAdminViewModel profile, string[] regions)
@@ -136,7 +132,6 @@ namespace BAL.Repository
             admin.Createdby = aspnetUser.Id;
             admin.Modifiedby = aspnetUser.Id;
 
-
             _context.Admins.Add(admin);
             _context.SaveChanges();
 
@@ -145,7 +140,6 @@ namespace BAL.Repository
             aspnetUserRole.Name = "1";
             _context.Aspnetuserroles.Add(aspnetUserRole);
             _context.SaveChanges();
-
 
             if (regions != null)
             {

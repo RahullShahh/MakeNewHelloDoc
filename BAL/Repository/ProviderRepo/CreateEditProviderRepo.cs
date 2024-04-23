@@ -100,6 +100,11 @@ namespace BAL.Repository.ProviderRepo
                 EditPhysician.BusinessWebsite = Physician.Businesswebsite;
                 EditPhysician.PhysicianUsername = PhysicianAspData.Username;
                 EditPhysician.PhysicianChosenLocations =  _context.Physicianregions.Where(region => region.Physicianid==Physician.Physicianid ).ToList().Select(x => x.Regionid ).ToList();
+                EditPhysician.NDCexists = Physician.Isnondisclosuredoc;
+                EditPhysician.LDexists = Physician.Islicensedoc;
+                EditPhysician.BCexists = Physician.Isbackgrounddoc;
+                EditPhysician.ICAexists = Physician.Isagreementdoc;
+                EditPhysician.HIPAAexists = Physician.Istrainingdoc;
             }
 
             return EditPhysician;

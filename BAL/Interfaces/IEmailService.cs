@@ -9,7 +9,7 @@ namespace BAL.Interfaces
 {
     public interface IEmailService
     {
-        public void SendEmailWithAttachments(List<string> fileNameList,int requestid, string path);
+        public void SendEmailWithAttachments(int requestid, string path);
         public void SendAgreementLink(int requestid, string link,string email);
         public void SendEmailForPasswordReset(ForgotPasswordViewModel fvm,string ResetLink);
         public void SendEmailWithLink(string firstname, string lastname, string email,string link);

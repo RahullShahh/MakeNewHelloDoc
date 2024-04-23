@@ -27,24 +27,26 @@ namespace BAL.Repository
         public PatientProfileViewModel PatientProfile(string email)
         {
             User v = _context.Users.FirstOrDefault(dt => dt.Email == email);
-            PatientProfileViewModel ppm = new()
+            PatientProfileViewModel ppm = new();
+            if (v != null)
             {
-                email = v.Email,
-                FirstName = v.Firstname,
-                LastName = v.Lastname,
-                PhoneNo = v.Mobile,
-                street = v.Street,
-                state = v.State,
-                city = v.City,
-                zipcode = v.Zipcode,
-                userid = v.Userid
-            };
+
+                ppm.FirstName = v.Firstname;
+                ppm.LastName = v.Lastname ?? "";
+                ppm.PhoneNo = v.Mobile ?? "";
+                ppm.zipcode = v.Zipcode ?? "";
+                ppm.street = v.Street ?? "";
+                ppm.userid = v.Userid;
+                ppm.state = v.State ?? "";
+                ppm.email = v.Email;
+                ppm.city = v.City ?? "";
+            }
             return ppm;
         }
         public void EditProfile(PatientProfileViewModel ppm, string email)
         {
             User dbUser = _context.Users.FirstOrDefault(u => u.Email == ppm.email);
-            if (dbUser != null) 
+            if (dbUser != null)
             {
                 dbUser.Firstname = ppm.FirstName;
                 dbUser.Lastname = ppm.LastName;
@@ -57,7 +59,7 @@ namespace BAL.Repository
                 dbUser.State = ppm.state;
                 dbUser.Zipcode = ppm.zipcode;
                 _context.Update(dbUser);
-            }            
+            }
         }
 
         public ViewDocumentsViewModel ViewPatientDocsGet(int requestid, string email)
@@ -65,9 +67,7 @@ namespace BAL.Repository
             User user = _context.Users.FirstOrDefault(u => u.Email == email);
             Request request = _context.Requests.FirstOrDefault(v => v.Requestid == requestid);
             List<Requestwisefile> files = _context.Requestwisefiles.Where(reqFiles => reqFiles.Requestid == requestid).ToList();
-
             ViewDocumentsViewModel vm = new ViewDocumentsViewModel();
-
             vm.ConfirmationNo = request.Confirmationnumber;
             vm.RequestID = requestid;
             vm.Username = user.Firstname + " " + user.Lastname;
@@ -90,7 +90,7 @@ namespace BAL.Repository
             }
             return vm;
         }
-        public PatientDashboardViewModel PatientDashboard( string email)
+        public PatientDashboardViewModel PatientDashboard(string email)
         {
             User? user = _context.Users.FirstOrDefault(u => u.Email == email);
 

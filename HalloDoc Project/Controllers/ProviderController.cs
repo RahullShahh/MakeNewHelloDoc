@@ -130,6 +130,7 @@ namespace HalloDoc_Project.Controllers
             {
                 var AgreementLink = Url.Action("ReviewAgreement", "Guest", new { ReqId = RequestId }, Request.Scheme);
                 _emailService.SendAgreementLink(RequestId, AgreementLink, email);
+                _notyf.Success("Agreement link sent to user.");
                 return RedirectToAction("AdminDashboard", "Guest");
             }
             return View();
@@ -140,6 +141,7 @@ namespace HalloDoc_Project.Controllers
         {
             var WebsiteLink = Url.Action("patient_submit_request_screen", "Guest", new { }, Request.Scheme);
             _emailService.SendEmailWithLink(FirstName, LastName, Email, WebsiteLink);
+            _notyf.Success("Link sent.");
         }
         #endregion
 
@@ -153,7 +155,6 @@ namespace HalloDoc_Project.Controllers
             };
             return View(model);
         }
-
         [HttpPost]
         [RoleAuthorize((int)AllowMenu.AdminDashboard)]
         public IActionResult CreateRequestProviderDashboard(CreateRequestViewModel model)
@@ -162,9 +163,8 @@ namespace HalloDoc_Project.Controllers
             {
                 _adminActions.CreateRequestFromAdminDashboard(model);
             }
-            return RedirectToAction("CreateRequestAdminDashboard");
+            return RedirectToAction("CreateRequestProviderDashboard");
         }
-
         #endregion
 
         #region Transfer Case Methods
@@ -175,6 +175,7 @@ namespace HalloDoc_Project.Controllers
             var phyId = HttpContext.Session.GetString("AspnetuserId");
             var physician = _context.Physicians.FirstOrDefault(x => x.Aspnetuserid == phyId);
             _adminActions.ProviderTransferCase(RequestId, TransferPhysician, TransferDescription, physician.Physicianid);
+            _notyf.Success("Case transferred successfully");
             return Ok();
         }
         #endregion
@@ -224,11 +225,12 @@ namespace HalloDoc_Project.Controllers
         public IActionResult ConcludeCareDeleteFile(int fileid, int requestid)
         {
             var fileRequest = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == fileid);
-            fileRequest.Isdeleted = true;
-
-            _context.Requestwisefiles.Update(fileRequest);
+            if (fileRequest != null)
+            {
+                fileRequest.Isdeleted = true;
+                _context.Requestwisefiles.Update(fileRequest);
+            }
             _context.SaveChanges();
-
             return RedirectToAction("ProviderConcludeCare", new { requestid = requestid });
         }
         [HttpPost]
@@ -267,7 +269,7 @@ namespace HalloDoc_Project.Controllers
             ViewUploadsViewModel uploads = new()
             {
                 ConfirmationNo = user.Confirmationnumber ?? "",
-                Patientname = patients.Firstname + " " + patients.Lastname ?? "",
+                Patientname = patients.Firstname  + " " + patients.Lastname ?? "",
                 RequestID = requestid,
                 Requestwisefiles = requestFile,
                 PhysicianId = Physicianid.Physicianid
@@ -429,7 +431,7 @@ namespace HalloDoc_Project.Controllers
 
                 _context.Requests.Update(request);
 
-                string logNotes = Physicianid.Firstname+" "+Physicianid.Lastname + " started house call encounter on " + currentTime.ToString("MM/dd/yyyy") + " at " + currentTime.ToString("HH:mm:ss");
+                string logNotes = Physicianid.Firstname + " " + Physicianid.Lastname + " started house call encounter on " + currentTime.ToString("MM/dd/yyyy") + " at " + currentTime.ToString("HH:mm:ss");
 
                 Requeststatuslog reqStatusLog = new Requeststatuslog()
                 {
@@ -441,11 +443,8 @@ namespace HalloDoc_Project.Controllers
                 };
 
                 _context.Requeststatuslogs.Add(reqStatusLog);
-
                 _context.SaveChanges();
-
                 _notyf.Success("Successfully Started House Call Consultation.");
-
                 return true;
             }
             catch (Exception ex)
@@ -455,12 +454,8 @@ namespace HalloDoc_Project.Controllers
             }
         }
 
-        [HttpPost]
-        public bool EncounterHouseCallFinish(int requestId)
+        public IActionResult EncounterHouseCallFinish(int requestId)
         {
-
-            //int phyId = Convert.ToInt32(HttpContext.Request.Headers.Where(x => x.Key == "userId").FirstOrDefault().Value);
-            //string phyName = HttpContext.Request.Headers.Where(x => x.Key == "userName").FirstOrDefault().Value;
             var getPhysician = HttpContext.Session.GetString("AspnetuserId");
             var Physicianid = _context.Physicians.FirstOrDefault(phy => phy.Aspnetuserid == getPhysician);
             try
@@ -469,7 +464,7 @@ namespace HalloDoc_Project.Controllers
                 if (request == null)
                 {
                     _notyf.Error("Cannot find request. Please try again later.");
-                    return false;
+                    return RedirectToAction("ProviderDashboard");
                 }
 
                 DateTime currentTime = DateTime.Now;
@@ -480,7 +475,7 @@ namespace HalloDoc_Project.Controllers
 
                 _context.Requests.Update(request);
 
-                string logNotes = Physicianid.Firstname+" "+Physicianid.Lastname + " finished house call encounter on " + currentTime.ToString("MM/dd/yyyy") + " at " + currentTime.ToString("HH:mm:ss");
+                string logNotes = Physicianid.Firstname + " " + Physicianid.Lastname + " finished house call encounter on " + currentTime.ToString("MM/dd/yyyy") + " at " + currentTime.ToString("HH:mm:ss");
 
                 Requeststatuslog reqStatusLog = new()
                 {
@@ -495,22 +490,20 @@ namespace HalloDoc_Project.Controllers
 
                 _context.SaveChanges();
 
-                _notyf.Success("Successfully Started House Call Consultation.");
+                _notyf.Success("Successfully ended House Call Consultation.");
 
-                return true;
+                return RedirectToAction("ProviderDashboard");
             }
             catch (Exception ex)
             {
                 _notyf.Error(ex.Message);
-                return false;
+                return RedirectToAction("ProviderDashboard");
             }
         }
 
         [HttpPost]
         public bool EncounterConsult(int requestId)
         {
-            //int phyId = Convert.ToInt32(HttpContext.Request.Headers.Where(x => x.Key == "userId").FirstOrDefault().Value);
-            //string phyName = HttpContext.Request.Headers.Where(x => x.Key == "userName").FirstOrDefault().Value;
             var getPhysician = HttpContext.Session.GetString("AspnetuserId");
             var Physicianid = _context.Physicians.FirstOrDefault(phy => phy.Aspnetuserid == getPhysician);
             try
@@ -684,11 +677,11 @@ namespace HalloDoc_Project.Controllers
         {
             var getPhysician = HttpContext.Session.GetString("AspnetuserId");
             var Physicianid = _context.Physicians.FirstOrDefault(phy => phy.Aspnetuserid == getPhysician);
-            bool shiftExists = _context.Shiftdetails.Any(sd => sd.Isdeleted !=  true && sd.Shift.Physicianid == Physicianid.Physicianid &&
+            bool shiftExists = _context.Shiftdetails.Any(sd => sd.Isdeleted != true && sd.Shift.Physicianid == Physicianid.Physicianid &&
                sd.Shiftdate.Date == StartDate.ToDateTime(TimeOnly.FromDateTime(DateTime.Now)).Date &&
-               ((Starttime <= sd.Endtime && Starttime >= sd.Starttime) 
-                    || (Endtime >= sd.Starttime && Endtime <= sd.Endtime)  
-                    || (sd.Starttime <= Endtime && sd.Starttime >= Starttime)  
+               ((Starttime <= sd.Endtime && Starttime >= sd.Starttime)
+                    || (Endtime >= sd.Starttime && Endtime <= sd.Endtime)
+                    || (sd.Starttime <= Endtime && sd.Starttime >= Starttime)
                     || (sd.Endtime >= Starttime && sd.Endtime <= Endtime)));
             if (!shiftExists)
             {
@@ -697,11 +690,11 @@ namespace HalloDoc_Project.Controllers
                 shift.Startdate = StartDate;
                 if (Isrepeat != null && Isrepeat == "checked")
                 {
-                    shift.Isrepeat = true ;
+                    shift.Isrepeat = true;
                 }
                 else
                 {
-                    shift.Isrepeat =  false;
+                    shift.Isrepeat = false;
                 }
                 if (string.IsNullOrEmpty(Refill))
                 {
@@ -712,10 +705,10 @@ namespace HalloDoc_Project.Controllers
                     shift.Repeatupto = int.Parse(Refill);
                 }
                 shift.Createddate = DateTime.Now;
-                var email = HttpContext.Session.GetString("Email");
-                if (email != null)
+                var id = HttpContext.Session.GetString("AspnetuserId");
+                if (id != null)
                 {
-                    shift.Createdby = _context.Aspnetusers.Where(x => x.Email == email).Select(x => x.Id).FirstOrDefault() ?? "";
+                    shift.Createdby = id;
                 }
                 _context.Add(shift);
                 _context.SaveChanges();

@@ -313,7 +313,10 @@
                                 <div>
                                     <input type="file" class="form-control" id="ica" accept=".pdf" asp-for="IndependentContractAgreement" hidden />
                                     <label for="ica" class="input-group-text btn btn-info text-white d-none OnboardingUploadButton"> Upload</label>
-                                    <a href="/Content/Providers/@Model.PhysicianId/ICA.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    @if (Model.ICAexists == true)
+                                    {
+                                        <a href="/Content/Providers/@Model.PhysicianId/ICA.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -328,8 +331,10 @@
                                 <div>
                                     <input type="file" class="form-control" id="backgroundCheck" accept=".pdf" hidden asp-for="BackgroundCheck" />
                                     <label for="backgroundCheck" class="input-group-text btn btn-info text-white d-none OnboardingUploadButton"> Upload</label>
-
-                                    <a href="/Content/Providers/@Model.PhysicianId/BC.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    @if (Model.BCexists == true)
+                                    {
+                                        <a href="/Content/Providers/@Model.PhysicianId/BC.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -344,7 +349,10 @@
                                 <div>
                                     <input type="file" class="form-control" id="hipaa" accept=".pdf" hidden asp-for="HIPAACompliance" />
                                     <label for="hipaa" class="input-group-text btn btn-info text-white d-none OnboardingUploadButton"> Upload</label>
-                                    <a href="/Content/Providers/@Model.PhysicianId/HIPPA.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    @if (Model.HIPAAexists == true)
+                                    {
+                                        <a href="/Content/Providers/@Model.PhysicianId/HIPPA.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -359,7 +367,10 @@
                                 <div>
                                     <input type="file" class="form-control" id="nonDisclosure" accept=".pdf" hidden asp-for="NonDisclosureAgreement" />
                                     <label for="nonDisclosure" class="input-group-text btn btn-info text-white OnboardingUploadButton d-none"> Upload</label>
-                                    <a href="/Content/Providers/@Model.PhysicianId/NDA.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    @if (Model.NDCexists == true)
+                                    {
+                                        <a href="/Content/Providers/@Model.PhysicianId/NDA.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -375,7 +386,10 @@
                                 <div>
                                     <input type="file" class="form-control" id="LicenseDoc" accept=".pdf" hidden asp-for="LicenseDocument" />
                                     <label for="LicenseDoc" class="input-group-text btn btn-info text-white OnboardingUploadButton d-none"> Upload</label>
-                                    <a href="/Content/Providers/@Model.PhysicianId/LD.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    @if (Model.LDexists == true)
+                                    {
+                                        <a href="/Content/Providers/@Model.PhysicianId/LD.pdf" target="_blank" class="btn btn-info text-light OnboardingViewButton "> View </a>
+                                    }
                                 </div>
                             </div>
                         </div>
